@@ -42,7 +42,6 @@ def build_mpdka(pdka):
 
     new_equiv_class, array = find_equiv(pdka, equiv_class)
 
-
     num = 0
     for item in new_equiv_class:
         num = max(num, item)

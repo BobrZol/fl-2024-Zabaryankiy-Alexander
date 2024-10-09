@@ -24,11 +24,13 @@ class Automaton:
         for state in self.arr_states:
             for key in state.transitions.keys():
                 for val in state.transitions[key]:
-                    data["delta"].append({
-                        "from" : self.get_state_ind(state),
-                        "to": self.get_state_ind(val),
-                        "sym": key
-                    })
+                    data["delta"].append(
+                        {
+                            "from": self.get_state_ind(state),
+                            "to": self.get_state_ind(val),
+                            "sym": key,
+                        }
+                    )
         json_string = json.dumps(data)
         return json_string
 

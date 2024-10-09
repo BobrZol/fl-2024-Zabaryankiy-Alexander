@@ -31,9 +31,14 @@ def regex_to_nfa(regex):
     ) and outer_brackets(regex[0 : len(regex) - 1]):
         return build_nfa(regex_to_nfa(regex[0 : len(regex) - 1]), regex[len(regex) - 1])
 
-    if len(regex) == 3 and regex[1] in ['|', ''] and regex[0].isalpha() and regex[2].isalpha():
+    if (
+        len(regex) == 3
+        and regex[1] in ["|", ""]
+        and regex[0].isalpha()
+        and regex[2].isalpha()
+    ):
         return merge_nfa(regex_to_nfa(regex[0]), regex_to_nfa(regex[2]), regex[1])
-    if len(regex) == 2 and regex[0].isalpha() and regex[1] in ['*', '+']:
+    if len(regex) == 2 and regex[0].isalpha() and regex[1] in ["*", "+"]:
         return build_nfa(regex_to_nfa(regex[0]), regex[1])
     if len(regex) == 2 and regex[0].isalpha() and regex[1].isalpha():
         return merge_nfa(regex_to_nfa(regex[0]), regex_to_nfa(regex[1]), "")
@@ -49,13 +54,13 @@ def regex_to_nfa(regex):
             # print("ind", ind, "rgx", regex[0:ind + 1], "cr", cr)
             if regex[ind + 1] == "|":
                 return merge_nfa(
-                    regex_to_nfa(regex[0:ind + 1]),
+                    regex_to_nfa(regex[0 : ind + 1]),
                     regex_to_nfa(regex[ind + 2 :]),
                     regex[ind + 1],
                 )
             elif regex[ind + 1] != "*" and regex[ind + 1] != "+":
                 return merge_nfa(
-                    regex_to_nfa(regex[0:ind + 1]), regex_to_nfa(regex[ind + 1: ]), ""
+                    regex_to_nfa(regex[0 : ind + 1]), regex_to_nfa(regex[ind + 1 :]), ""
                 )
         ind += 1
 
@@ -76,7 +81,7 @@ def build_nfa(nfa, str_opr):
     nfa.start_state = start
     if str_opr == "*":
         nfa.add_transition(start, "e", finish)
-    
+
     return nfa
 
 

@@ -9,12 +9,12 @@ from Test import test_build_mpdka
 def main():
     test_build_mpdka()
     nfa = regex_to_nfa("(aa(a|ba)*bb(ab)*)*")
-    #nfa = regex_to_nfa("ab")
-    #nfa.get_info()
+    # nfa = regex_to_nfa("ab")
+    # nfa.get_info()
     remove_e(nfa)
     # nfa.get_info()
     pdka = build_pdka(nfa)
-    #pdka.get_info()
+    # pdka.get_info()
     mpdka = build_mpdka(pdka)
     mpdka.get_info()
 
