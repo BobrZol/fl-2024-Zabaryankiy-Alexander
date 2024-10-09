@@ -42,6 +42,7 @@ def build_mpdka(pdka):
 
     new_equiv_class, array = find_equiv(pdka, equiv_class)
 
+
     num = 0
     for item in new_equiv_class:
         num = max(num, item)
@@ -54,13 +55,14 @@ def build_mpdka(pdka):
         mpdka.arr_states.append(new_st)
 
     for i in range(len(pdka.arr_states)):
+        start = mpdka.arr_states[new_equiv_class[i]]
+        if equiv_class[i] == 1:
+            mpdka.final_states.append(start)
         for j in range(len(alphabet)):
-            start = mpdka.arr_states[new_equiv_class[i]]
             to = mpdka.arr_states[array[j][i]]
             if (alphabet[j] not in start.transitions) or (
                 to not in start.transitions[alphabet[j]]
             ):
                 mpdka.add_transition(start, alphabet[j], to)
-            if equiv_class[i] == 1:
-                mpdka.final_states.append(start)
+    mpdka.rm_unused_states()
     return mpdka

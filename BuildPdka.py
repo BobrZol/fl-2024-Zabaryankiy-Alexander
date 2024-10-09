@@ -8,14 +8,7 @@ def build_pdka(nfa):
     alphabet = nfa.get_alphabet()
 
     while len(p_queue) > 0:
-        # print("dka_q")
-        # for arr in dka_q:
-        #   transformed_array = map(nfa.get_state_ind, arr)
-        #   print(' '.join(map(str, transformed_array)))
-
         curr_state = p_queue[0]
-        # transformed_array = map(nfa.get_state_ind, curr_state)
-        # print("curr_state " + ' '.join(map(str, transformed_array)))
         del p_queue[0]
 
         for alph in alphabet:
@@ -28,12 +21,6 @@ def build_pdka(nfa):
                 p_queue.append(new_state)
                 pdka_q.append(new_state)
 
-    # print("pdka_q")
-    # for arr in pdka_q:
-    #   transformed_array = map(nfa.get_state_ind, arr)
-    #   print(' '.join(map(str, transformed_array)))
-
-    # pdka
     pdka = Automaton.Automaton()
     pdka.final_states = []
 
@@ -46,21 +33,17 @@ def build_pdka(nfa):
 
     for i in range(len(pdka_q)):
         curr_state = pdka_q[i]
+        for st in curr_state:
+            if st in nfa.final_states:
+                pdka.final_states.append(pdka.arr_states[i])
         for alph in alphabet:
             to_state = []
             for st in curr_state:
-                # if st == nfa.start_state:
-                #   print("YESSS")
-                #   pdka.start_state = curr_state
-                if st in nfa.final_states:
-                    pdka.final_states.append(pdka.arr_states[i])
                 for alph_in_curr in st.transitions.keys():
                     if alph_in_curr == alph:
                         to_state.extend(st.transitions[alph_in_curr])
 
             if to_state == []:
-                # transformed_array = map(nfa.get_state_ind, curr_state)
-                # print("curr_state " + str(i) + ' ' + ' '.join(map(str, transformed_array)))
                 bl_drain = True
                 pdka.add_transition(pdka.arr_states[i], alph, drain)
                 continue

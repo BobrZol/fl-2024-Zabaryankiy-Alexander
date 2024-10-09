@@ -1,4 +1,5 @@
 import State
+import json
 
 
 class Automaton:
@@ -12,6 +13,24 @@ class Automaton:
             self.add_transition(self.start_state, str_, new_state)
             self.arr_states = [self.start_state, new_state]
             self.final_states = [new_state]
+
+    def to_json(self):
+        data = {}
+        data["s0"] = self.get_state_ind(self.start_state)
+        data["states"] = list(map(self.get_state_ind, self.arr_states))
+        data["final"] = list(map(self.get_state_ind, self.final_states))
+        data["delta"] = []
+
+        for state in self.arr_states:
+            for key in state.transitions.keys():
+                for val in state.transitions[key]:
+                    data["delta"].append({
+                        "from" : self.get_state_ind(state),
+                        "to": self.get_state_ind(val),
+                        "sym": key
+                    })
+        json_string = json.dumps(data)
+        return json_string
 
     def get_alphabet(self):
         alphabet = []
@@ -58,15 +77,25 @@ class Automaton:
         for st1 in self.arr_states:
             if st1 == self.start_state:
                 continue
-            num_tr = 0
+            num_tr_in = 0
+            num_tr_out = 0
             for st2 in self.arr_states:
                 if st1 in sum(list(st2.transitions.values()), []) and st1 != st2:
-                    num_tr += 1
-                    break
-            if num_tr == 0:
+                    num_tr_in += 1
+                if st2 in sum(list(st1.transitions.values()), []) and st1 != st2:
+                    num_tr_out += 1
+            if num_tr_in == 0 or (num_tr_out == 0 and st1 not in self.final_states):
                 rm_list.append(st1)
 
         for st in rm_list:
             if st in self.final_states:
                 self.final_states.remove(st)
+            for state in self.arr_states:
+                rm_list_state = []
+                for key in state.transitions.keys():
+                    for val in state.transitions[key]:
+                        if val == st:
+                            rm_list_state.append(key)
+                for rm in rm_list_state:
+                    state.transitions[rm].remove(st)
             self.arr_states.remove(st)
